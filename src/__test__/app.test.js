@@ -14,10 +14,11 @@ const app = new Application({
 });
 
 describe("App", () => {
-  beforeAll(async () => {
+  beforeEach(async () => {
     await app.start();
   });
-  afterAll(async () => {
+
+  afterEach(async () => {
     if (app && app.isRunning()) await app.stop();
   });
 
