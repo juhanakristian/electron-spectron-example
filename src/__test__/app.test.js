@@ -3,14 +3,13 @@ import path from "path";
 
 import { setupBrowser } from "@testing-library/webdriverio";
 
+const packageName = process.env.npm_package_name;
 const app = new Application({
   path: path.join(
-    __dirname,
-    "..",
-    "..",
-    "out",
-    "electron-spectron-example-darwin-x64/electron-spectron-example.app/Contents/MacOS/electron-spectron-example"
+    process.cwd(), // This works assuming you run npm test from project root
+    `out/${packageName}-darwin-x64/${packageName}.app/Contents/MacOS/${packageName}`
   ),
+  port: 9156,
 });
 
 describe("App", () => {
@@ -27,7 +26,15 @@ describe("App", () => {
     expect(isVisible).toBe(true);
   });
 
-  test("should display heading when button is clicked", async () => {
+  test("should display heading", async () => {
+    const { getByRole } = setupBrowser(app.client);
+
+    expect(
+      await getByRole("heading", { name: /hello from react!/i })
+    ).toBeDefined();
+  });
+
+  test("should add heading when button is clicked", async () => {
     const { getByRole } = setupBrowser(app.client);
 
     const button = await getByRole("button", { name: /click me/i });
